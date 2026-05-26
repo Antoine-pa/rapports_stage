@@ -1,0 +1,33 @@
+Intitulé du stage : Modélisation de la liste des copies dans gem5
+
+Descriptif explicite du stage :
+ L’équipe Madmax souhaite étudier les protocoles de cohérence de caches et de représentation de la liste des copies avec gem5.
+L’objectif final est de modéliser une liste des copies telle que Ackwise, DCC.
+La première étape sera de représenter un répertoire avec une taille limité, contrairement aux implémentations dans gem5.
+
+informations suplémentaires : 
+Il s'agit de modéliser en gem5 le matériel nécessaire au maintien à jour de
+la liste des copies.
+   Dans les architectures autour d'un bus, un message de cohérence est visible
+par tous les caches qui y sont connectés, du à la nature même de l'interconnect
+qui fait du broadcast (les caches peuvent espionner - snoop - les transactions
+en cours sur le bus).
+   Dans les architectures basées sur des réseaux (sur puce - NoC - ou non), le
+broadcast coûte un œil, aussi le principe est de faire du mutlicast : il y a
+quelque part stocké l'information qu'une ligne de cache est présente dans tel
+cache et ne l'est pas dans tel autre. On peut ainsi ne prévenir que les caches
+qui le nécessite.
+   Ce quelque part s'appelle un directory, et le papier de base sur le sujet est
+du à Paul Feautrier, un collègue plus tout jeune que j'ai eu le plaisir d'avoir
+comme rapporteur sur mon HdR :
+Censier & Feautrier. (1978). A new solution to coherence problems in multicache
+systems. IEEE transactions on computers, 100(12), 1112-1118.
+L'idée est d'avoir un masque de n bits qu'on appelle presence bits, tel que le
+bit i indique si le cache i cache la ligne.
+Avec des machines massivement multiprocesseur, cette dépendance en O(n) prend
+trop de place, et il y a une foultitude d'astuces qui essayent de limiter les
+ressources en ne perdant pas trop en perf.
+Julie [mon encadrante de stage] a fait sa thèse sur le sujet, et a proposé une nouvelle stratégie.
+Nous aimerions relancer cette étude en utilisant gem5 et son réseau sur puce
+(garnet), et cela nécessite donc de modéliser en gem5 et de manière proche du
+matériel les méthodes de l'état de l'art sur le sujet.
